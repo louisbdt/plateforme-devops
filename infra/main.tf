@@ -1,14 +1,10 @@
-resource "kind_cluster" "plateforme" {
-  wait_for_ready = true
-  name = "plateforme"
+module "cluster" {
+  source = "./modules/cluster"
+  nom    = "plateforme"
 }
 
-resource "helm_release" "argocd" {
-    name = "argocd"
-    namespace = "argocd"
-    create_namespace = true
-    repository = "https://argoproj.github.io/argo-helm"
-    chart = "argo-cd"
-    version = "10.10.3"
-    timeout = 600
+module "argocd" {
+  source        = "./modules/argocd"
+  version_chart = "10.10.3"
+  depends_on    = [module.cluster]
 }
